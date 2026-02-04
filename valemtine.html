@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¿Quieres ser mi Valentine? 💘</title>
+
+  <!-- Fuente moderna -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #ffe4ec, #f9c5d1, #f3a8b8);
+      color: #1f2933;
+      overflow: hidden;
+    }
+
+    /* 💌 Tarjeta glassmorphism */
+    .card {
+      background: rgba(255, 255, 255, 0.35);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: 28px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      padding: 6vw;
+      width: 90vw;
+      max-width: 520px;
+      min-height: 360px;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: clamp(1.7rem, 5vw, 2.4rem);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .buttons {
+      position: relative;
+      width: 100%;
+      height: 180px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      padding: clamp(12px, 4vw, 16px) clamp(26px, 6vw, 36px);
+      font-size: clamp(1rem, 4vw, 1.2rem);
+      cursor: pointer;
+      position: absolute;
+      white-space: nowrap;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      transition:
+        transform 0.25s cubic-bezier(.2,.8,.2,1),
+        box-shadow 0.25s ease,
+        background-color 0.25s ease;
+    }
+
+    /* 💚 Botón Sí */
+    #yes {
+      background: linear-gradient(135deg, #34d399, #10b981);
+      color: white;
+      left: 12%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    #yes:hover {
+      transform: translateY(-50%) scale(1.07);
+      box-shadow: 0 14px 34px rgba(16,185,129,0.35);
+    }
+
+    /* 🤍 Botón No */
+    #no {
+      background: rgba(255, 255, 255, 0.75);
+      color: #374151;
+      left: 55%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* 💖 Corazones sutiles */
+    .heart {
+      position: fixed;
+      bottom: -20px;
+      font-size: 22px;
+      animation: floatUp linear forwards;
+      opacity: 0.35;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(0); opacity: 0.4; }
+      to { transform: translateY(-120vh); opacity: 0; }
+    }
+
+    .result {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .result img {
+      width: min(260px, 70vw);
+      border-radius: 18px;
+    }
+
+    @media (max-width: 480px) {
+      .buttons {
+        height: 220px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <div id="question">
+      <h1>
+        ¿Quieres ser<br>
+        <span style="opacity:0.85">mi Valentine?</span> 💕
+      </h1>
+
+      <div class="buttons" id="buttons">
+        <button id="yes">Sí 💖</button>
+        <button id="no">No 💔</button>
+      </div>
+    </div>
+
+    <div class="result" id="result">
+      <h1>Se vienen cositas 😘</h1>
+      <img src="https://media.giphy.com/media/MDJ9IbxxvDUQM/giphy.gif" alt="Love GIF">
+      <p>Te amo 💘</p>
+    </div>
+  </div>
+
+  <script>
+    const noButton = document.getElementById('no');
+    const yesButton = document.getElementById('yes');
+    const buttons = document.getElementById('buttons');
+    const question = document.getElementById('question');
+    const result = document.getElementById('result');
+
+    let attempts = 0;
+    let scale = 1;
+
+    function moveNo() {
+      attempts++;
+
+      const container = buttons.getBoundingClientRect();
+      const button = noButton.getBoundingClientRect();wq
+
+      const maxX = container.width - button.width;
+      const maxY = container.height - button.height;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noButton.style.left = `${Math.max(8, Math.min(x, maxX - 8))}px`;
+      noButton.style.top = `${Math.max(8, Math.min(y, maxY - 8))}px`;
+
+      scale = Math.max(0.55, scale - 0.06);
+      noButton.style.transform = `translateY(-50%) scale(${scale})`;
+
+      if (attempts > 10) {
+        noButton.innerText = 'Sí Porfa😳';
+        noButton.style.background =
+          'linear-gradient(135deg, #34d399, #10b981)';
+        noButton.style.color = 'white';
+      }
+    }
+
+    // Desktop + mobile
+    noButton.addEventListener('mouseover', moveNo);
+    noButton.addEventListener('touchstart', moveNo);
+
+    // Corazones
+    setInterval(() => {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = Math.random() > 0.5 ? '♡' : '♥';
+
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = Math.random() * 14 + 18 + 'px';
+      heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 7000);
+    }, 320);
+
+    yesButton.addEventListener('click', () => {
+      question.style.display = 'none';
+      result.style.display = 'flex';
+    });
+
+    noButton.addEventListener('click', () => {
+      if (attempts > 6) yesButton.click();
+    });
+  </script>
+
+</body>
+</html>
